@@ -22,7 +22,7 @@ const storage = multer.diskStorage({
     cb(uploadError, newDir + "/public/uploads/");
   },
   filename: function (req, file, cb) {
-    //const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+    
 
     const fileName = file.originalname.split(" ").join("-");
     const extension = FILE_TYPE_MAP[file.mimetype];
