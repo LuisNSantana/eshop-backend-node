@@ -3,7 +3,7 @@ const express = require("express");
 const { Category } = require("../models/category");
 const router = express.Router();
 const mongoose = require("mongoose");
-//const { count } = require("moongose/models/user_model");
+
 const multer = require("multer");
 
 const FILE_TYPE_MAP = {
