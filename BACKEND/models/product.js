@@ -54,7 +54,11 @@ const productSchema = mongoose.Schema({
     dateCreated:{
         type: Date,
         default:Date.now()
-    }
+    },
+    discountProduct:{
+        type: Number,
+        default:0
+    },
 })
 
 //moficamos para que nos aparezca id en vez _id

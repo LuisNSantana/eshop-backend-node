@@ -130,6 +130,7 @@ router.put(`/:id`, uploadOptions.single("image"), async (req, res) => {
       rating: req.body.rating,
       numReviews: req.body.numReviews,
       isFeatured: req.body.isFeatured,
+      discountProduct: req.body.discountProduct,
     },
     {
       new: true,
