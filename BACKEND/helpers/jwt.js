@@ -10,14 +10,14 @@ function authJwt() {
   }).unless({
     path: [
       //regular expressions para poder usar rutas que contengan variables
-     /*  { url: /\/public\/uploads(.*)/, methods: ["GET", "OPTIONS"] },
+      { url: /\/public\/uploads(.*)/, methods: ["GET", "OPTIONS"] },
       { url: /\/api\/v1\/products(.*)/, methods: ["GET", "OPTIONS"] },
       { url: /\/api\/v1\/categories(.*)/, methods: ["GET", "OPTIONS"] },
       `${api}/users/login`,
-      `${api}/users/register`, */
+      `${api}/users/register`,
 
       //habilitar todas las url mientras se desarrolla el front
-      {url: /(.*)/}
+     //{ url: /(.*)/ },
     ],
   });
 }

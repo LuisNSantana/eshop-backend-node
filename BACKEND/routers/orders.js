@@ -1,7 +1,9 @@
 const { Order } = require("../models/order");
 const express = require("express");
 const { OrderItem } = require("../models/order-item");
+const { Product } = require("../models/product");
 const router = express.Router();
+const stripe = require('stripe')('sk_test_51NZreOFLHvHQ6Qtbf1tB3FweyOUeuNKuOuRGseztAm1fVNQrHVTN1DCNk36rKE7LMHnFth7zU7EgfTySZH9wj2eW00Jwnf11AC')
 
 router.get(`/`, async (req, res) => {
   const orderList = await Order.find()
@@ -85,6 +87,40 @@ router.post(`/`, async (req, res) => {
   }
   res.send(order);
 });
+
+//checkout session
+
+router.post(`/checkout-session`, async (req, res) => {
+  const orderItems = req.body;
+  if(!orderItems) return res.status(400).send('No order items')
+  const lineItems = await Promise.all(
+    orderItems.map(async (orderItem) => {
+      const product = await Product.findById(orderItem.product);
+      const price = product.price;
+      const lineItem = {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: product.name,
+          },
+          unit_amount: price * 100,
+        },
+        quantity: orderItem.quantity,
+      };
+      return lineItem;
+    })
+  );
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: lineItems,
+    mode: 'payment',
+    success_url: 'http://localhost:4200/success',
+    cancel_url: 'http://localhost:4200/error',
+  });
+  res.json({id: session.id});
+
+});
+  
 
 //update order
 
