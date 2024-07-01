@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
 router.get(`/`, async (req, res) => {
   const userList = await User.find().select("-passwordHash");
 
@@ -44,6 +45,7 @@ router.get(`/:id`, async (req, res) => {
   }
   res.status(200).send(user);
 });
+
 router.put(`/:id`, async (req, res) => {
   const userExist = await User.findById(req.params.id);
   let newPassword;
@@ -72,15 +74,15 @@ router.put(`/:id`, async (req, res) => {
   );
 
   if (!user) {
-    return res.status(400).send("The category cannot be updated");
+    return res.status(400).send("The user cannot be updated");
   }
   res.status(200).send(user);
 });
-//login
 
+//login
 router.post("/login", async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
-  const secret = process.env.secret;
+  const secret = process.env.JWT_SECRET;
 
   if (!user) {
     return res.status(400).send("User not found");
@@ -102,6 +104,7 @@ router.post("/login", async (req, res) => {
     return res.status(400).send("Password mismatch");
   }
 });
+
 router.get(`/get/count`, async (req, res) => {
   //calcular cantidad de usuarios
   const userCount = await User.countDocuments();
@@ -115,14 +118,14 @@ router.get(`/get/count`, async (req, res) => {
 });
 
 //delete user
-
 router.delete(`/:id`, (req, res) => {
   User.findByIdAndRemove(req.params.id)
     .then((user) => {
       if (user) {
-        return res
-          .status(200)
-          .json({ success: true, message: "The User: "+ user.name + " has been removed" });
+        return res.status(200).json({
+          success: true,
+          message: "The User: " + user.name + " has been removed",
+        });
       } else {
         return res.status(400).json({
           success: false,
