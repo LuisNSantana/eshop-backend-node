@@ -1,8 +1,8 @@
 # Ignorar archivos del sistema de Mac
-.DS_store
+.DS_Store
 
 # Ignorar carpeta node_modules
-node_modules
+node_modules/
 
 # Ignorar todos los archivos de texto
 *.txt
@@ -10,5 +10,77 @@ node_modules
 # Ignorar archivos relacionados con claves de una API
 .env
 .env.local
+
 # Ignorar archivos de configuración SASS
-.sass-cache
+.sass-cache/
+
+# Ignorar archivos de log
+*.log
+
+# Ignorar archivos de paquetes
+*.tgz
+*.tar.gz
+
+# Ignorar compilaciones de TypeScript
+dist/
+build/
+
+# Ignorar directorios de cobertura de pruebas
+coverage/
+
+# Ignorar configuraciones de IDE
+.vscode/
+.idea/
+
+# Ignorar archivos generados por sistemas operativos
+Thumbs.db
+Desktop.ini
+
+# Ignorar archivos temporales
+tmp/
+temp/
+
+# Ignorar archivos de configuración de Babel
+.babelrc
+.babelrc.js
+.babelrc.json
+babel.config.js
+babel.config.json
+
+# Ignorar archivos de configuración de ESLint
+.eslintignore
+.eslintrc
+.eslintrc.js
+.eslintrc.json
+.eslintrc.yaml
+
+# Ignorar archivos de configuración de Prettier
+.prettierignore
+.prettierrc
+.prettierrc.js
+.prettierrc.json
+.prettierrc.yaml
+
+# Ignorar archivos de configuración de Jest
+jest.config.js
+jest.config.ts
+jest.config.json
+jest.setup.js
+
+# Ignorar archivos de configuración de Webpack
+webpack.config.js
+webpack.config.ts
+webpack.config.json
+
+# Ignorar archivos de configuración de TypeScript
+tsconfig.json
+tsconfig.app.json
+tsconfig.spec.json
+
+# Ignorar archivos de configuración de npm/yarn
+package-lock.json
+yarn.lock
+
+# Ignorar archivos de configuración de herramientas de frontend
+.postcssrc.js
+.postcss.config.js
