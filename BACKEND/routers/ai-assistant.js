@@ -1,12 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const { Product } = require("../models/product");
+const { Order } = require("../models/order"); // Asegúrate de importar tu modelo de orden
 const { chatWithAssistant } = require("../helpers/openai");
-const { createProductExcel } = require("../helpers/excel");
+const { createProductExcel, createOrderExcel } = require("../helpers/excel");
 
-// Helper function to determine if a query is about products
+// Helper function to determine if a query is about products or orders
 function isProductQuery(message) {
-  return /producto|precio|categoría|stock|inventario|todos los productos|all products|mas barato|más barato|mas caro|más caro|excel productos/.test(
+  return /producto|precio|categoría|stock|inventario|todos los productos|all products|mas barato|más barato|mas caro|más caro|excel productos|excel órdenes|excel ordenes/.test(
     message.toLowerCase()
   );
 }
@@ -22,18 +23,49 @@ function formatProductResponse(products) {
   }));
 }
 
+// Helper function to format order response
+function formatOrderResponse(orders) {
+  return orders.map((order) => ({
+    id: order._id,
+    user: order.user,
+    dateOrdered: order.dateOrdered,
+    totalPrice: order.totalPrice,
+    status: order.status,
+  }));
+}
+
 // Chat endpoint
 router.post("/chat", async (req, res) => {
   const { message } = req.body;
 
   try {
     if (isProductQuery(message)) {
-      let products;
+      let products, orders;
 
       if (/excel productos/.test(message.toLowerCase())) {
         const workbook = await createProductExcel();
-        workbook.write("products.xlsx", res);
-        return;
+        const buffer = await workbook.writeToBuffer();
+        res.setHeader(
+          "Content-Disposition",
+          'attachment; filename="products.xlsx"'
+        );
+        res.setHeader(
+          "Content-Type",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        return res.send(buffer);
+      } else if (/excel órdenes|excel ordenes/.test(message.toLowerCase())) {
+        const workbook = await createOrderExcel();
+        const buffer = await workbook.writeToBuffer();
+        res.setHeader(
+          "Content-Disposition",
+          'attachment; filename="orders.xlsx"'
+        );
+        res.setHeader(
+          "Content-Type",
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        );
+        return res.send(buffer);
       }
 
       if (/mas barato|más barato/.test(message.toLowerCase())) {
@@ -54,13 +86,19 @@ router.post("/chat", async (req, res) => {
         }
       }
 
-      if (products.length === 0) {
+      if (products && products.length === 0) {
         res.json({
           response:
             "No se encontraron productos que coincidan con la búsqueda.",
         });
-      } else {
+      } else if (products) {
         res.json({ response: formatProductResponse(products) });
+      } else if (orders && orders.length === 0) {
+        res.json({
+          response: "No se encontraron órdenes que coincidan con la búsqueda.",
+        });
+      } else if (orders) {
+        res.json({ response: formatOrderResponse(orders) });
       }
     } else {
       const response = await chatWithAssistant(message);
